@@ -1,0 +1,23 @@
+{
+  "name": "using-cmux",
+  "version": "1.8.1",
+  "description": "Skill for operating cmux terminal multiplexer (and c11-compatible clones). Pane splitting, sub-agent spawning/monitoring/result collection, command sending, screen reading, and notifications.",
+  "author": {
+    "name": "hummer98"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/hummer98/using-cmux",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -n \"$CMUX_SURFACE_ID\" ] && [ -z \"$CMUX_NO_RENAME_TAB\" ]; then CMUX=\"${CMUX_BUNDLED_CLI_PATH:-cmux}\"; REF=$(\"$CMUX\" identify | jq -r '.caller.surface_ref'); NUM=$(echo \"$REF\" | cut -d: -f2); CUR=$(\"$CMUX\" tree --all --json | jq -r --arg r \"$REF\" '[.. | objects | select(.ref? == $r) | .title? // \"\"] | first // \"\"'); case \"$CUR\" in \"[$NUM] \"*) ;; *) \"$CMUX\" rename-tab --surface \"$REF\" \"[$NUM] Claude Code\" ;; esac; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
